@@ -55,7 +55,7 @@ function editTicket(ticket) {
 }
 
 async function removeTicket(ticket) {
-  if (!window.confirm(`Remove "${ticket.title}" from your ticket list?`)) {
+  if (!window.confirm(`Supprimer "${ticket.title}" de votre liste de tickets ?`)) {
     return
   }
 
@@ -93,25 +93,26 @@ function emptyTicket() {
           <div class="col-lg-7">
             <span class="badge rounded-pill text-bg-light text-primary mb-3">
               <i class="bi bi-github me-1"></i>
-              Java open source contribution tracker
+              Suivi des contributions Java open source
             </span>
-            <h1 class="display-4 fw-bold mb-3">Find your next good first issue.</h1>
+            <h1 class="display-4 fw-bold mb-3">Trouvez votre prochain ticket pour débuter.</h1>
             <p class="lead mb-4">
-              Curate GitHub tickets from popular Java repositories, track what looks promising, and
-              move the best opportunities from discovery to contribution.
+              Sélectionnez des tickets GitHub issus de dépôts Java populaires, suivez les pistes
+              prometteuses et faites progresser les meilleures opportunités de la découverte à la
+              contribution.
             </p>
             <div class="d-flex flex-wrap gap-3">
               <div class="metric-card">
                 <strong>{{ ticketsStore.tickets.length }}</strong>
-                <span>tickets tracked</span>
+                <span>tickets suivis</span>
               </div>
               <div class="metric-card">
                 <strong>{{ uniqueRepositoryCount }}</strong>
-                <span>repositories</span>
+                <span>dépôts</span>
               </div>
               <div class="metric-card">
                 <strong>{{ activeTicketCount }}</strong>
-                <span>active leads</span>
+                <span>pistes actives</span>
               </div>
             </div>
           </div>
@@ -122,8 +123,8 @@ function emptyTicket() {
                   <i class="bi bi-kanban"></i>
                 </div>
                 <div>
-                  <h2 class="h4 fw-bold mb-1">Ticket pipeline</h2>
-                  <p class="mb-0 text-white-50">Seeded from GitHub MCP search results.</p>
+                  <h2 class="h4 fw-bold mb-1">Pipeline des tickets</h2>
+                  <p class="mb-0 text-white-50">Alimenté par les résultats de recherche GitHub MCP.</p>
                 </div>
               </div>
               <div class="status-grid">
@@ -144,14 +145,16 @@ function emptyTicket() {
           <div class="card border-0 shadow-lg sticky-lg-top ticket-form-card">
             <div class="card-body p-4">
               <div class="d-flex align-items-center justify-content-between mb-3">
-                <h2 class="h4 fw-bold mb-0">{{ isEditing ? 'Edit ticket' : 'Add ticket' }}</h2>
+                <h2 class="h4 fw-bold mb-0">
+                  {{ isEditing ? 'Modifier le ticket' : 'Ajouter un ticket' }}
+                </h2>
                 <button
                   v-if="isEditing"
                   class="btn btn-sm btn-outline-secondary"
                   type="button"
                   @click="resetForm"
                 >
-                  Cancel
+                  Annuler
                 </button>
               </div>
 
@@ -161,7 +164,7 @@ function emptyTicket() {
 
               <form class="vstack gap-3" @submit.prevent="submitTicket">
                 <div>
-                  <label class="form-label fw-semibold" for="title">Title</label>
+                  <label class="form-label fw-semibold" for="title">Titre</label>
                   <input
                     id="title"
                     v-model.trim="form.title"
@@ -169,12 +172,12 @@ function emptyTicket() {
                     maxlength="255"
                     required
                     type="text"
-                    placeholder="Improve docs for..."
+                    placeholder="Améliorer la documentation de..."
                   />
                 </div>
 
                 <div>
-                  <label class="form-label fw-semibold" for="repository">GitHub repository</label>
+                  <label class="form-label fw-semibold" for="repository">Dépôt GitHub</label>
                   <input
                     id="repository"
                     v-model.trim="form.repository"
@@ -182,12 +185,12 @@ function emptyTicket() {
                     pattern="[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+"
                     required
                     type="text"
-                    placeholder="owner/repository"
+                    placeholder="organisation/depot"
                   />
                 </div>
 
                 <div>
-                  <label class="form-label fw-semibold" for="link">Ticket link</label>
+                  <label class="form-label fw-semibold" for="link">Lien du ticket</label>
                   <input
                     id="link"
                     v-model.trim="form.link"
@@ -200,7 +203,7 @@ function emptyTicket() {
                 </div>
 
                 <div>
-                  <label class="form-label fw-semibold" for="status">Status</label>
+                  <label class="form-label fw-semibold" for="status">Statut</label>
                   <select id="status" v-model="form.status" class="form-select" required>
                     <option
                       v-for="status in TICKET_STATUSES"
@@ -221,7 +224,7 @@ function emptyTicket() {
                     v-if="ticketsStore.saving"
                     class="spinner-border spinner-border-sm me-2"
                   ></span>
-                  {{ isEditing ? 'Save ticket' : 'Add ticket' }}
+                  {{ isEditing ? 'Enregistrer le ticket' : 'Ajouter le ticket' }}
                 </button>
               </form>
             </div>
@@ -233,7 +236,7 @@ function emptyTicket() {
             <div class="card-body p-4">
               <div class="row g-3">
                 <div class="col-md-6">
-                  <label class="form-label fw-semibold" for="search">Search tickets</label>
+                  <label class="form-label fw-semibold" for="search">Rechercher des tickets</label>
                   <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-search"></i></span>
                     <input
@@ -241,14 +244,14 @@ function emptyTicket() {
                       v-model="search"
                       class="form-control"
                       type="search"
-                      placeholder="Title or repository"
+                      placeholder="Titre ou dépôt"
                     />
                   </div>
                 </div>
                 <div class="col-md-3">
-                  <label class="form-label fw-semibold" for="status-filter">Status</label>
+                  <label class="form-label fw-semibold" for="status-filter">Statut</label>
                   <select id="status-filter" v-model="statusFilter" class="form-select">
-                    <option value="ALL">All statuses</option>
+                    <option value="ALL">Tous les statuts</option>
                     <option
                       v-for="status in TICKET_STATUSES"
                       :key="status.value"
@@ -259,9 +262,9 @@ function emptyTicket() {
                   </select>
                 </div>
                 <div class="col-md-3">
-                  <label class="form-label fw-semibold" for="repo-filter">Repository</label>
+                  <label class="form-label fw-semibold" for="repo-filter">Dépôt</label>
                   <select id="repo-filter" v-model="repositoryFilter" class="form-select">
-                    <option value="ALL">All repos</option>
+                    <option value="ALL">Tous les dépôts</option>
                     <option
                       v-for="repository in ticketsStore.repositories"
                       :key="repository"
@@ -277,13 +280,13 @@ function emptyTicket() {
 
           <div v-if="ticketsStore.loading" class="text-center py-5">
             <div class="spinner-border text-primary" role="status"></div>
-            <p class="mt-3 text-secondary">Loading GitHub tickets...</p>
+            <p class="mt-3 text-secondary">Chargement des tickets GitHub...</p>
           </div>
 
           <div v-else-if="filteredTickets.length === 0" class="empty-state text-center p-5">
             <i class="bi bi-inbox display-4 text-primary"></i>
-            <h2 class="h4 fw-bold mt-3">No tickets match your filters</h2>
-            <p class="text-secondary mb-0">Try another repository, status, or search term.</p>
+            <h2 class="h4 fw-bold mt-3">Aucun ticket ne correspond à vos filtres</h2>
+            <p class="text-secondary mb-0">Essayez un autre dépôt, statut ou terme de recherche.</p>
           </div>
 
           <div v-else class="ticket-grid">
@@ -314,7 +317,7 @@ function emptyTicket() {
                     rel="noopener noreferrer"
                   >
                     <i class="bi bi-github me-1"></i>
-                    Open issue
+                    Ouvrir le ticket
                   </a>
                   <button
                     class="btn btn-outline-secondary"
@@ -322,7 +325,7 @@ function emptyTicket() {
                     @click="editTicket(ticket)"
                   >
                     <i class="bi bi-pencil me-1"></i>
-                    Edit
+                    Modifier
                   </button>
                   <button
                     class="btn btn-outline-danger"
@@ -330,7 +333,7 @@ function emptyTicket() {
                     @click="removeTicket(ticket)"
                   >
                     <i class="bi bi-trash me-1"></i>
-                    Remove
+                    Supprimer
                   </button>
                 </div>
               </div>

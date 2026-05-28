@@ -11,6 +11,6 @@ describe('TicketStatusBadge', () => {
       },
     })
 
-    expect(wrapper.text()).toContain('Working on')
+    expect(wrapper.text()).toContain('En cours')
   })
 })

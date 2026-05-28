@@ -11,7 +11,7 @@ async function request(path = '', options = {}) {
   const text = await response.text()
 
   if (!response.ok) {
-    let message = text || `Request failed with status ${response.status}`
+    let message = text || `La requête a échoué avec le statut ${response.status}`
     if (response.headers.get('content-type')?.includes('application/json') && text) {
       const problem = JSON.parse(text)
       message = problem.detail || problem.title || message
