@@ -3,16 +3,16 @@ import { defineStore } from 'pinia'
 import { createTicket, deleteTicket, listTickets, updateTicket } from '@/services/tickets'
 
 export const TICKET_STATUSES = [
-  { value: 'NEW', label: 'New', badgeClass: 'text-bg-primary', icon: 'bi-stars' },
+  { value: 'NEW', label: 'New', badgeClass: 'status-new', icon: 'bi-stars' },
   {
     value: 'INTERESTING',
     label: 'Interesting',
-    badgeClass: 'text-bg-info',
+    badgeClass: 'status-interesting',
     icon: 'bi-bookmark-heart',
   },
-  { value: 'WORKING_ON', label: 'Working on', badgeClass: 'text-bg-warning', icon: 'bi-tools' },
-  { value: 'DONE', label: 'Done', badgeClass: 'text-bg-success', icon: 'bi-check2-circle' },
-  { value: 'REJECTED', label: 'Rejected', badgeClass: 'text-bg-secondary', icon: 'bi-x-circle' },
+  { value: 'WORKING_ON', label: 'Working on', badgeClass: 'status-working', icon: 'bi-tools' },
+  { value: 'DONE', label: 'Done', badgeClass: 'status-done', icon: 'bi-check2-circle' },
+  { value: 'REJECTED', label: 'Rejected', badgeClass: 'status-rejected', icon: 'bi-x-circle' },
 ]
 
 export const useTicketsStore = defineStore('tickets', () => {
