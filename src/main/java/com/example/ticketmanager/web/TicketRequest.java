@@ -15,5 +15,6 @@ public record TicketRequest(
         @NotBlank @Size(max = 500) @Pattern(
                 regexp = "^https://github\\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/issues/[0-9]+$",
                 message = "doit être une URL de ticket GitHub") String link,
-        @NotNull TicketStatus status) {
+        @NotNull TicketStatus status,
+        @NotNull Long assigneeId) {
 }

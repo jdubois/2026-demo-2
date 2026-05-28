@@ -19,16 +19,20 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.ticketmanager.domain.Ticket;
+import com.example.ticketmanager.domain.User;
 import com.example.ticketmanager.repository.TicketRepository;
+import com.example.ticketmanager.repository.UserRepository;
 
 @RestController
 @RequestMapping("/api/tickets")
 class TicketController {
 
     private final TicketRepository ticketRepository;
+    private final UserRepository userRepository;
 
-    TicketController(TicketRepository ticketRepository) {
+    TicketController(TicketRepository ticketRepository, UserRepository userRepository) {
         this.ticketRepository = ticketRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping
@@ -42,7 +46,8 @@ class TicketController {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Un ticket avec ce lien GitHub existe déjà");
         }
 
-        Ticket ticket = new Ticket(request.title(), request.repository(), request.link(), request.status());
+        Ticket ticket = new Ticket(
+                request.title(), request.repository(), request.link(), request.status(), resolveAssignee(request.assigneeId()));
         Ticket savedTicket = ticketRepository.save(ticket);
         return ResponseEntity.created(URI.create("/api/tickets/" + savedTicket.getId())).body(savedTicket);
     }
@@ -60,6 +65,7 @@ class TicketController {
         ticket.setRepository(request.repository());
         ticket.setLink(request.link());
         ticket.setStatus(request.status());
+        ticket.setAssignee(resolveAssignee(request.assigneeId()));
         return ticketRepository.save(ticket);
     }
 
@@ -71,5 +77,10 @@ class TicketController {
 
         ticketRepository.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private User resolveAssignee(Long assigneeId) {
+        return userRepository.findById(assigneeId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Assignee not found"));
     }
 }
