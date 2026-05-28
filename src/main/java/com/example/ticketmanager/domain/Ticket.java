@@ -33,7 +33,7 @@ public class Ticket {
 
     @NotBlank
     @Size(max = 120)
-    @Pattern(regexp = "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$", message = "must use the owner/repository format")
+    @Pattern(regexp = "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$", message = "doit utiliser le format propriétaire/dépôt")
     @Column(nullable = false, length = 120)
     private String repository;
 
@@ -41,7 +41,7 @@ public class Ticket {
     @Size(max = 500)
     @Pattern(
             regexp = "^https://github\\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/issues/[0-9]+$",
-            message = "must be a GitHub issue URL")
+            message = "doit être une URL de ticket GitHub")
     @Column(nullable = false, length = 500, unique = true)
     private String link;
 

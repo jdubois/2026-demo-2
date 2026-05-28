@@ -69,7 +69,7 @@ const filterSummary = computed(() => {
     activeFilters.push(`"${search.value.trim()}"`)
   }
 
-  return activeFilters.length > 0 ? activeFilters.join(' / ') : 'All tickets'
+  return activeFilters.length > 0 ? activeFilters.join(' / ') : 'Tous les tickets'
 })
 const isEditing = computed(() => Boolean(form.id))
 
@@ -94,7 +94,7 @@ function editTicket(ticket) {
 }
 
 async function removeTicket(ticket) {
-  if (!window.confirm(`Remove "${ticket.title}" from your ticket list?`)) {
+  if (!window.confirm(`Supprimer "${ticket.title}" de votre liste de tickets ?`)) {
     return
   }
 
@@ -126,25 +126,25 @@ function emptyTicket() {
 
 <template>
   <main class="enterprise-shell">
-    <aside class="enterprise-sidebar" aria-label="Ticket Manager navigation">
-      <a class="brand-lockup" href="#portfolio" aria-label="Ticket Manager home">
+    <aside class="enterprise-sidebar" aria-label="Navigation Ticket Manager">
+      <a class="brand-lockup" href="#portfolio" aria-label="Accueil Ticket Manager">
         <span class="brand-icon">
           <i class="bi bi-grid-1x2-fill"></i>
         </span>
         <span>
           <strong>TicketOps</strong>
-          <small>Portfolio command</small>
+          <small>Pilotage portefeuille</small>
         </span>
       </a>
 
-      <nav class="sidebar-nav" aria-label="Dashboard sections">
+      <nav class="sidebar-nav" aria-label="Sections du tableau de bord">
         <a class="active" href="#portfolio">
           <i class="bi bi-speedometer2"></i>
-          Executive view
+          Vue exécutive
         </a>
         <a href="#controls">
           <i class="bi bi-sliders"></i>
-          Controls
+          Filtres
         </a>
         <a href="#ticket-list">
           <i class="bi bi-kanban"></i>
@@ -152,59 +152,59 @@ function emptyTicket() {
         </a>
         <a href="#ticket-form">
           <i class="bi bi-plus-square"></i>
-          Intake
+          Saisie
         </a>
       </nav>
 
       <div class="sidebar-brief">
-        <span class="brief-label">Operating model</span>
-        <strong>Curated GitHub opportunities</strong>
-        <p>Track discovery, qualification, and delivery from a single governed workspace.</p>
+        <span class="brief-label">Modèle opérationnel</span>
+        <strong>Opportunités GitHub qualifiées</strong>
+        <p>Suivez la découverte, la qualification et la livraison dans un espace gouverné.</p>
       </div>
     </aside>
 
     <section class="enterprise-main">
       <header id="portfolio" class="workspace-hero">
         <div>
-          <p class="eyebrow">Enterprise issue portfolio</p>
-          <h1>Operational dashboard for open source ticket intake.</h1>
+          <p class="eyebrow">Portefeuille de tickets entreprise</p>
+          <h1>Tableau de bord opérationnel pour les tickets open source.</h1>
           <p class="hero-copy">
-            Prioritize GitHub issues by status, repository, and delivery readiness with a
-            boardroom-ready view of your contribution pipeline.
+            Priorisez les tickets GitHub par statut, dépôt et niveau de préparation avec une vue
+            prête pour le pilotage de votre pipeline de contribution.
           </p>
         </div>
         <div class="hero-actions">
           <span class="live-indicator">
             <span></span>
-            Live repository data
+            Données dépôt en direct
           </span>
           <a class="btn btn-light btn-lg" href="#ticket-form">
             <i class="bi bi-plus-lg me-2"></i>
-            New ticket
+            Nouveau ticket
           </a>
         </div>
       </header>
 
-      <section class="kpi-grid" aria-label="Portfolio summary">
+      <section class="kpi-grid" aria-label="Synthèse du portefeuille">
         <article class="kpi-card kpi-card-primary">
-          <span class="kpi-label">Active portfolio</span>
+          <span class="kpi-label">Portefeuille actif</span>
           <strong>{{ activeTicketCount }}</strong>
-          <span>{{ filteredTickets.length }} visible after filters</span>
+          <span>{{ filteredTickets.length }} visibles après filtres</span>
         </article>
         <article class="kpi-card">
-          <span class="kpi-label">Total tickets</span>
+          <span class="kpi-label">Tickets au total</span>
           <strong>{{ totalTicketCount }}</strong>
-          <span>Across {{ uniqueRepositoryCount }} repositories</span>
+          <span>Sur {{ uniqueRepositoryCount }} dépôts</span>
         </article>
         <article class="kpi-card">
-          <span class="kpi-label">Completion rate</span>
+          <span class="kpi-label">Taux de clôture</span>
           <strong>{{ completionRate }}%</strong>
-          <span>{{ completedTicketCount }} done, {{ rejectedTicketCount }} rejected</span>
+          <span>{{ completedTicketCount }} terminés, {{ rejectedTicketCount }} rejetés</span>
         </article>
         <article class="kpi-card">
-          <span class="kpi-label">Repository coverage</span>
+          <span class="kpi-label">Couverture des dépôts</span>
           <strong>{{ uniqueRepositoryCount }}</strong>
-          <span>Curated Java ecosystems</span>
+          <span>Écosystèmes Java sélectionnés</span>
         </article>
       </section>
 
@@ -213,15 +213,15 @@ function emptyTicket() {
           <section id="controls" class="enterprise-panel controls-panel">
             <div class="panel-heading">
               <div>
-                <p class="eyebrow">Portfolio controls</p>
-                <h2>Filter the operating queue</h2>
+                <p class="eyebrow">Contrôles du portefeuille</p>
+                <h2>Filtrer la file opérationnelle</h2>
               </div>
               <span class="filter-chip">{{ filterSummary }}</span>
             </div>
 
             <div class="control-grid">
               <div>
-                <label class="form-label" for="search">Search tickets</label>
+                <label class="form-label" for="search">Rechercher des tickets</label>
                 <div class="input-group enterprise-input">
                   <span class="input-group-text"><i class="bi bi-search"></i></span>
                   <input
@@ -229,14 +229,14 @@ function emptyTicket() {
                     v-model="search"
                     class="form-control"
                     type="search"
-                    placeholder="Title or repository"
+                    placeholder="Titre ou dépôt"
                   />
                 </div>
               </div>
               <div>
-                <label class="form-label" for="status-filter">Status</label>
+                <label class="form-label" for="status-filter">Statut</label>
                 <select id="status-filter" v-model="statusFilter" class="form-select">
-                  <option value="ALL">All statuses</option>
+                  <option value="ALL">Tous les statuts</option>
                   <option
                     v-for="status in TICKET_STATUSES"
                     :key="status.value"
@@ -247,9 +247,9 @@ function emptyTicket() {
                 </select>
               </div>
               <div>
-                <label class="form-label" for="repo-filter">Repository</label>
+                <label class="form-label" for="repo-filter">Dépôt</label>
                 <select id="repo-filter" v-model="repositoryFilter" class="form-select">
-                  <option value="ALL">All repositories</option>
+                  <option value="ALL">Tous les dépôts</option>
                   <option
                     v-for="repository in ticketsStore.repositories"
                     :key="repository"
@@ -265,21 +265,21 @@ function emptyTicket() {
           <section id="ticket-list" class="enterprise-panel">
             <div class="panel-heading">
               <div>
-                <p class="eyebrow">Delivery pipeline</p>
-                <h2>Ticket operating queue</h2>
+                <p class="eyebrow">Pipeline de livraison</p>
+                <h2>File opérationnelle des tickets</h2>
               </div>
-              <span class="queue-count">{{ filteredTickets.length }} records</span>
+              <span class="queue-count">{{ filteredTickets.length }} enregistrements</span>
             </div>
 
             <div v-if="ticketsStore.loading" class="loading-state">
               <div class="spinner-border text-primary" role="status"></div>
-              <p>Loading GitHub tickets...</p>
+              <p>Chargement des tickets GitHub...</p>
             </div>
 
             <div v-else-if="filteredTickets.length === 0" class="empty-state">
               <i class="bi bi-inbox"></i>
-              <h3>No tickets match your filters</h3>
-              <p>Adjust the repository, status, or search term to expand the operating queue.</p>
+              <h3>Aucun ticket ne correspond à vos filtres</h3>
+              <p>Ajustez le dépôt, le statut ou le terme de recherche pour élargir la file.</p>
             </div>
 
             <div v-else class="ticket-table">
@@ -300,7 +300,7 @@ function emptyTicket() {
                   <h3>{{ ticket.title }}</h3>
                 </div>
 
-                <div class="ticket-actions" aria-label="Ticket actions">
+                <div class="ticket-actions" aria-label="Actions du ticket">
                   <a
                     class="btn btn-primary"
                     :href="ticket.link"
@@ -308,7 +308,7 @@ function emptyTicket() {
                     rel="noopener noreferrer"
                   >
                     <i class="bi bi-box-arrow-up-right me-1"></i>
-                    Open issue
+                    Ouvrir le ticket
                   </a>
                   <button
                     class="btn btn-outline-secondary"
@@ -316,7 +316,7 @@ function emptyTicket() {
                     @click="editTicket(ticket)"
                   >
                     <i class="bi bi-pencil-square me-1"></i>
-                    Edit
+                    Modifier
                   </button>
                   <button
                     class="btn btn-outline-danger"
@@ -324,7 +324,7 @@ function emptyTicket() {
                     @click="removeTicket(ticket)"
                   >
                     <i class="bi bi-trash3 me-1"></i>
-                    Remove
+                    Supprimer
                   </button>
                 </div>
               </article>
@@ -336,8 +336,8 @@ function emptyTicket() {
           <section id="ticket-form" class="enterprise-panel intake-panel">
             <div class="panel-heading">
               <div>
-                <p class="eyebrow">Controlled intake</p>
-                <h2>{{ isEditing ? 'Edit ticket' : 'Add ticket' }}</h2>
+                <p class="eyebrow">Saisie contrôlée</p>
+                <h2>{{ isEditing ? 'Modifier le ticket' : 'Ajouter un ticket' }}</h2>
               </div>
               <button
                 v-if="isEditing"
@@ -345,7 +345,7 @@ function emptyTicket() {
                 type="button"
                 @click="resetForm"
               >
-                Cancel
+                Annuler
               </button>
             </div>
 
@@ -355,7 +355,7 @@ function emptyTicket() {
 
             <form class="vstack gap-3" @submit.prevent="submitTicket">
               <div>
-                <label class="form-label" for="title">Title</label>
+                <label class="form-label" for="title">Titre</label>
                 <input
                   id="title"
                   v-model.trim="form.title"
@@ -363,12 +363,12 @@ function emptyTicket() {
                   maxlength="255"
                   required
                   type="text"
-                  placeholder="Improve docs for..."
+                  placeholder="Améliorer la documentation de..."
                 />
               </div>
 
               <div>
-                <label class="form-label" for="repository">GitHub repository</label>
+                <label class="form-label" for="repository">Dépôt GitHub</label>
                 <input
                   id="repository"
                   v-model.trim="form.repository"
@@ -376,12 +376,12 @@ function emptyTicket() {
                   pattern="[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+"
                   required
                   type="text"
-                  placeholder="owner/repository"
+                  placeholder="organisation/depot"
                 />
               </div>
 
               <div>
-                <label class="form-label" for="link">Ticket link</label>
+                <label class="form-label" for="link">Lien du ticket</label>
                 <input
                   id="link"
                   v-model.trim="form.link"
@@ -394,7 +394,7 @@ function emptyTicket() {
               </div>
 
               <div>
-                <label class="form-label" for="status">Status</label>
+                <label class="form-label" for="status">Statut</label>
                 <select id="status" v-model="form.status" class="form-select" required>
                   <option
                     v-for="status in TICKET_STATUSES"
@@ -411,7 +411,7 @@ function emptyTicket() {
                   v-if="ticketsStore.saving"
                   class="spinner-border spinner-border-sm me-2"
                 ></span>
-                {{ isEditing ? 'Save changes' : 'Create ticket' }}
+                {{ isEditing ? 'Enregistrer les modifications' : 'Créer le ticket' }}
               </button>
             </form>
           </section>
@@ -419,8 +419,8 @@ function emptyTicket() {
           <section class="enterprise-panel status-panel">
             <div class="panel-heading">
               <div>
-                <p class="eyebrow">Status governance</p>
-                <h2>Pipeline mix</h2>
+                <p class="eyebrow">Gouvernance des statuts</p>
+                <h2>Répartition du pipeline</h2>
               </div>
             </div>
 
