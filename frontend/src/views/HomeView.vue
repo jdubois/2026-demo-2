@@ -8,6 +8,7 @@ const ticketsStore = useTicketsStore()
 const search = ref('')
 const statusFilter = ref('ALL')
 const repositoryFilter = ref('ALL')
+const assigneeFilter = ref('ALL')
 const formError = ref('')
 const form = reactive(emptyTicket())
 
@@ -18,12 +19,15 @@ const filteredTickets = computed(() => {
     const matchesSearch =
       !normalizedSearch ||
       ticket.title.toLowerCase().includes(normalizedSearch) ||
-      ticket.repository.toLowerCase().includes(normalizedSearch)
+      ticket.repository.toLowerCase().includes(normalizedSearch) ||
+      (ticket.assignee?.username ?? '').toLowerCase().includes(normalizedSearch)
     const matchesStatus = statusFilter.value === 'ALL' || ticket.status === statusFilter.value
     const matchesRepository =
       repositoryFilter.value === 'ALL' || ticket.repository === repositoryFilter.value
+    const matchesAssignee =
+      assigneeFilter.value === 'ALL' || ticket.assignee?.id === assigneeFilter.value
 
-    return matchesSearch && matchesStatus && matchesRepository
+    return matchesSearch && matchesStatus && matchesRepository && matchesAssignee
   })
 })
 
@@ -56,6 +60,7 @@ const statusDistribution = computed(() =>
 const filterSummary = computed(() => {
   const activeFilters = []
   const selectedStatus = TICKET_STATUSES.find((status) => status.value === statusFilter.value)
+  const selectedAssignee = ticketsStore.users.find((user) => user.id === assigneeFilter.value)
 
   if (selectedStatus) {
     activeFilters.push(selectedStatus.label)
@@ -63,6 +68,10 @@ const filterSummary = computed(() => {
 
   if (repositoryFilter.value !== 'ALL') {
     activeFilters.push(repositoryFilter.value)
+  }
+
+  if (selectedAssignee) {
+    activeFilters.push(`Assigné à ${selectedAssignee.username}`)
   }
 
   if (search.value.trim()) {
@@ -74,7 +83,9 @@ const filterSummary = computed(() => {
 const isEditing = computed(() => Boolean(form.id))
 
 onMounted(() => {
-  ticketsStore.fetchTickets()
+  Promise.all([ticketsStore.fetchUsers(), ticketsStore.fetchTickets()]).then(() => {
+    ensureDefaultAssignee()
+  })
 })
 
 async function submitTicket() {
@@ -88,7 +99,14 @@ async function submitTicket() {
 }
 
 function editTicket(ticket) {
-  Object.assign(form, ticket)
+  Object.assign(form, {
+    id: ticket.id,
+    title: ticket.title,
+    repository: ticket.repository,
+    link: ticket.link,
+    status: ticket.status,
+    assigneeId: ticket.assignee?.id ?? null,
+  })
   formError.value = ''
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
@@ -111,6 +129,7 @@ async function removeTicket(ticket) {
 
 function resetForm() {
   Object.assign(form, emptyTicket())
+  ensureDefaultAssignee()
 }
 
 function emptyTicket() {
@@ -120,6 +139,15 @@ function emptyTicket() {
     repository: '',
     link: '',
     status: 'NEW',
+    assigneeId: null,
+  }
+}
+
+function ensureDefaultAssignee() {
+  if (!form.assigneeId && ticketsStore.users.length > 0) {
+    const defaultAssignee =
+      ticketsStore.users.find((user) => user.username === 'julien') ?? ticketsStore.users[0]
+    form.assigneeId = defaultAssignee.id
   }
 }
 </script>
@@ -202,9 +230,9 @@ function emptyTicket() {
           <span>{{ completedTicketCount }} terminés, {{ rejectedTicketCount }} rejetés</span>
         </article>
         <article class="kpi-card">
-          <span class="kpi-label">Couverture des dépôts</span>
-          <strong>{{ uniqueRepositoryCount }}</strong>
-          <span>Écosystèmes Java sélectionnés</span>
+          <span class="kpi-label">Assignations</span>
+          <strong>{{ ticketsStore.users.length }}</strong>
+          <span>Utilisateurs disponibles</span>
         </article>
       </section>
 
@@ -229,7 +257,7 @@ function emptyTicket() {
                     v-model="search"
                     class="form-control"
                     type="search"
-                    placeholder="Titre ou dépôt"
+                    placeholder="Titre, dépôt ou assigné"
                   />
                 </div>
               </div>
@@ -259,6 +287,15 @@ function emptyTicket() {
                   </option>
                 </select>
               </div>
+              <div>
+                <label class="form-label" for="assignee-filter">Assigné à</label>
+                <select id="assignee-filter" v-model.number="assigneeFilter" class="form-select">
+                  <option value="ALL">Tous les assignés</option>
+                  <option v-for="user in ticketsStore.users" :key="user.id" :value="user.id">
+                    {{ user.username }}
+                  </option>
+                </select>
+              </div>
             </div>
           </section>
 
@@ -279,7 +316,7 @@ function emptyTicket() {
             <div v-else-if="filteredTickets.length === 0" class="empty-state">
               <i class="bi bi-inbox"></i>
               <h3>Aucun ticket ne correspond à vos filtres</h3>
-              <p>Ajustez le dépôt, le statut ou le terme de recherche pour élargir la file.</p>
+              <p>Ajustez le dépôt, le statut, l'assigné ou le terme de recherche pour élargir la file.</p>
             </div>
 
             <div v-else class="ticket-table">
@@ -296,6 +333,10 @@ function emptyTicket() {
                       <i class="bi bi-github"></i>
                       {{ ticket.repository }}
                     </a>
+                    <span class="repository-link">
+                      <i class="bi bi-person-circle"></i>
+                      {{ ticket.assignee?.username ?? 'Non assigné' }}
+                    </span>
                   </div>
                   <h3>{{ ticket.title }}</h3>
                 </div>
@@ -406,7 +447,27 @@ function emptyTicket() {
                 </select>
               </div>
 
-              <button class="btn btn-primary btn-lg" :disabled="ticketsStore.saving" type="submit">
+              <div>
+                <label class="form-label" for="assignee">Assigné à</label>
+                <select
+                  id="assignee"
+                  v-model.number="form.assigneeId"
+                  class="form-select"
+                  :disabled="ticketsStore.users.length === 0"
+                  required
+                >
+                  <option disabled :value="null">Choisir un assigné</option>
+                  <option v-for="user in ticketsStore.users" :key="user.id" :value="user.id">
+                    {{ user.username }}
+                  </option>
+                </select>
+              </div>
+
+              <button
+                class="btn btn-primary btn-lg"
+                :disabled="ticketsStore.saving || ticketsStore.users.length === 0"
+                type="submit"
+              >
                 <span
                   v-if="ticketsStore.saving"
                   class="spinner-border spinner-border-sm me-2"

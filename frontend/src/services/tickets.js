@@ -1,7 +1,8 @@
-const API_URL = '/api/tickets'
+const TICKETS_API_URL = '/api/tickets'
+const USERS_API_URL = '/api/users'
 
-async function request(path = '', options = {}) {
-  const response = await fetch(`${API_URL}${path}`, {
+async function request(url, options = {}) {
+  const response = await fetch(url, {
     headers: {
       'Content-Type': 'application/json',
       ...options.headers,
@@ -23,25 +24,29 @@ async function request(path = '', options = {}) {
 }
 
 export function listTickets() {
-  return request()
+  return request(TICKETS_API_URL)
 }
 
 export function createTicket(ticket) {
-  return request('', {
+  return request(TICKETS_API_URL, {
     method: 'POST',
     body: JSON.stringify(ticket),
   })
 }
 
 export function updateTicket(id, ticket) {
-  return request(`/${id}`, {
+  return request(`${TICKETS_API_URL}/${id}`, {
     method: 'PUT',
     body: JSON.stringify(ticket),
   })
 }
 
 export function deleteTicket(id) {
-  return request(`/${id}`, {
+  return request(`${TICKETS_API_URL}/${id}`, {
     method: 'DELETE',
   })
+}
+
+export function listUsers() {
+  return request(USERS_API_URL)
 }

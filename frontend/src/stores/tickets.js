@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { createTicket, deleteTicket, listTickets, updateTicket } from '@/services/tickets'
+import { createTicket, deleteTicket, listTickets, listUsers, updateTicket } from '@/services/tickets'
 
 export const TICKET_STATUSES = [
   { value: 'NEW', label: 'Nouveau', badgeClass: 'status-new', icon: 'bi-stars' },
@@ -17,6 +17,7 @@ export const TICKET_STATUSES = [
 
 export const useTicketsStore = defineStore('tickets', () => {
   const tickets = ref([])
+  const users = ref([])
   const loading = ref(false)
   const saving = ref(false)
   const error = ref('')
@@ -42,6 +43,10 @@ export const useTicketsStore = defineStore('tickets', () => {
     } finally {
       loading.value = false
     }
+  }
+
+  async function fetchUsers() {
+    users.value = await listUsers()
   }
 
   async function saveTicket(ticket) {
@@ -72,22 +77,27 @@ export const useTicketsStore = defineStore('tickets', () => {
 
   return {
     tickets,
+    users,
     loading,
     saving,
     error,
     repositories,
     countsByStatus,
     fetchTickets,
+    fetchUsers,
     saveTicket,
     removeTicket,
   }
 })
 
 function toPayload(ticket) {
+  const assigneeId = ticket.assigneeId ?? ticket.assignee?.id
+
   return {
     title: ticket.title.trim(),
     repository: ticket.repository.trim(),
     link: ticket.link.trim(),
     status: ticket.status,
+    assigneeId: assigneeId === '' ? null : assigneeId,
   }
 }
