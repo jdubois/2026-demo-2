@@ -39,7 +39,7 @@ class TicketController {
     @PostMapping
     ResponseEntity<Ticket> createTicket(@Valid @RequestBody TicketRequest request) {
         if (ticketRepository.existsByLink(request.link())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "A ticket with this GitHub link already exists");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Un ticket avec ce lien GitHub existe déjà");
         }
 
         Ticket ticket = new Ticket(request.title(), request.repository(), request.link(), request.status());
@@ -50,10 +50,10 @@ class TicketController {
     @PutMapping("/{id}")
     Ticket updateTicket(@PathVariable Long id, @Valid @RequestBody TicketRequest request) {
         Ticket ticket = ticketRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket introuvable"));
 
         if (ticketRepository.existsByLinkAndIdNot(request.link(), id)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "A ticket with this GitHub link already exists");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Un ticket avec ce lien GitHub existe déjà");
         }
 
         ticket.setTitle(request.title());
@@ -66,7 +66,7 @@ class TicketController {
     @DeleteMapping("/{id}")
     ResponseEntity<Void> deleteTicket(@PathVariable Long id) {
         if (!ticketRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket introuvable");
         }
 
         ticketRepository.deleteById(id);
